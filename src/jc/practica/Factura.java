@@ -5,12 +5,12 @@
  */
 package jc.practica;
 
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.text.DateFormatter;
+
+import static java.lang.String.format;
 
 /**
  *
@@ -122,25 +122,31 @@ public class Factura {
     public double getTotal() {
         double total = 0.0;
         for (DetalleFactura linea : detalle) {
-            total += linea.subTotal();
+            total += linea.total();
         }
         return total;
     }
 
     @Override
     public String toString() {
+
+        String title = DetalleFactura.getTitulo();
+
         StringBuilder sb = new StringBuilder()
-                .append("Factura No.:").append(numeroFactura).append("\t\t")
+                .append("Factura No.: ").append(numeroFactura).append("\t\t")
                 .append("Fecha: ").append(fechaFactura.format(DateTimeFormatter.ISO_DATE)).append("\n")
                 .append("Cliente: ").append(Facturador.obtenerInfoCliente(idCliente).getNombreCliente()).append("[").append(idCliente).append("]\n")
-                .append("-----------\n");
+                .append("+").append("-".repeat(title.length() - 2)).append("+\n")
+                .append(title).append("\n")
+                .append("+").append("-".repeat(title.length() - 2)).append("+\n");
 
         for (DetalleFactura linea : detalle) {
             sb.append(linea).append("\n");
         }
 
-        sb.append("-----------\n")
-                .append("Total: ").append(getTotal());
+        sb.append("+").append("-".repeat(title.length() - 2)).append("+\n")
+                .append("Total: ")
+                .append(format("%,.2f", getTotal()));
 
         return sb.toString();
     }

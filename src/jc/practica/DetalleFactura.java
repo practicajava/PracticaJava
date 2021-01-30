@@ -5,19 +5,22 @@
  */
 package jc.practica;
 
+import static java.lang.String.format;
+import static jc.practica.StringUtil.center;
+
 /**
  *
  * @author jcpalma
  */
 public class DetalleFactura {
-    
+
     private final int idDetalle;
     private final int idProducto;
     private final int cantidad;
     private final double precio;
     private final double isv;
     private final double porcentajeDescuento;
-    
+
     public DetalleFactura(int idDetalle, int idProducto, int cantidad, double precio, double isv, double descuento) {
         this.idDetalle = idDetalle;
         this.idProducto = idProducto;
@@ -26,15 +29,14 @@ public class DetalleFactura {
         this.isv = isv;
         this.porcentajeDescuento = descuento;
     }
-    
+
     public DetalleFactura(int idDetalle, int idProducto, int cantidad, double precio, double isv) {
-        this(idDetalle,idProducto,cantidad,precio, isv, 0);
+        this(idDetalle, idProducto, cantidad, precio, isv, 0.05);
     }
-    
+
     public DetalleFactura(int idDetalle, int idProducto, int cantidad, double precio) {
-        this(idDetalle,idProducto,cantidad,precio, 0.19, 0);
+        this(idDetalle, idProducto, cantidad, precio, 0.15, 0.05);
     }
-    
 
     /**
      * @return the idDetalle
@@ -42,14 +44,13 @@ public class DetalleFactura {
     public int getIdDetalle() {
         return idDetalle;
     }
-    
+
     /**
      * @return the cantidad
      */
     public int getCantidad() {
         return cantidad;
     }
-
 
     /**
      * @return the precio
@@ -58,7 +59,6 @@ public class DetalleFactura {
         return precio;
     }
 
-    
     /**
      * @return the isv
      */
@@ -72,29 +72,59 @@ public class DetalleFactura {
     public double getPorcentajeDescuento() {
         return porcentajeDescuento;
     }
-
     
     public double subTotal() {
-        double st = cantidad * precio;
-        return st + (st * isv) - (st * porcentajeDescuento);
+        return cantidad * precio;
+    }
+
+    /**
+     * Devuelve el monto del impuesto.
+     * @return el monto del impuesto.
+     */
+    public double getImpuesto() {
+        return subTotal() * isv;
+    }
+    
+    /**
+     * Devuelve el monto del descuento (como un valor positivo).
+     * @return un número real positivo con el monto del descuento.
+     */
+    public double getDescuento() {
+        return subTotal() * porcentajeDescuento;
+    }
+    
+    
+    public double total() {
+        return subTotal() + getImpuesto() - getDescuento();
+    }
+
+    public static String getTitulo() {
+        StringBuilder sb = new StringBuilder()
+                .append(format("|%s|", center("Linea", 5)))
+                .append(format("%s|", center("Producto", 8)))
+                .append(format("%s|", center("Cantidad", 10)))
+                .append(format("%s|", center("Precio", 12)))
+                .append(format("%s|", center("Sub Total", 13)))
+                .append(format("%s|", center("Impuesto", 12)))
+                .append(format("%s|", center("Descuento", 8)))
+                .append(format("%s|", center("Total", 12)));
+        return sb.toString();
     }
 
     @Override
     public String toString() {
-        
-        StringBuilder sb = new StringBuilder("[ ")
-                .append(idDetalle).append(" | ")
-                .append(idProducto).append(" | ")
-                .append(cantidad).append(" | ")
-                .append(precio).append(" | ")
-                .append(isv).append("% | ")
-                .append(porcentajeDescuento ).append("% | ")
-                .append(subTotal())
-                .append(" ]");
-        
+
+        StringBuilder sb = new StringBuilder("|")
+                .append(format(" %03d ", idDetalle))
+                .append(format("| %6d ", idProducto))
+                .append(format("| %,8d ", cantidad))
+                .append(format("| %,10.2f ", precio))
+                .append(format("| %,11.2f ", subTotal()))
+                .append(format("| %,10.2f ", getImpuesto()))
+                .append(format("| %(,7.2f ", getDescuento()))
+                .append(format("|%,11.2f|", total()));
+
         return sb.toString();
     }
-    
-    
-    
+
 }

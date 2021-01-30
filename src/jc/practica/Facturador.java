@@ -5,6 +5,7 @@
  */
 package jc.practica;
 
+import java.text.MessageFormat;
 import java.time.LocalDate;
 
 /**
@@ -23,7 +24,6 @@ public class Facturador {
         f1.agregarDetalle(2, 10, 12.56);
         f1.agregarDetalle(72, 3, 102.20);
         f1.agregarDetalle(1024, 1, 12050.99);
-        
         
         // Imprime la factura
         System.out.println(f1);
